@@ -27,6 +27,7 @@ public:
     m_name(name), m_credits(credits), m_lectureCount(lectureCount),
     m_practiceCount(practiceCount){
     }
+    ~Course() = default;
 
     unsigned int getCredits() const {
         return m_credits;
@@ -62,6 +63,7 @@ public:
     Classroom(unsigned int number, unsigned int capacity, ClassroomType type):
     m_number(number), m_capacity(capacity), m_roomType(type){
     }
+    ~Classroom() = default;
 
     unsigned int getNumber() const {
         return m_number;
@@ -101,6 +103,7 @@ public:
     m_fullName(name), m_experienceYears(experienceYears),
     m_degree(degree), m_faculty(faculty)
     {}
+    ~Lecturer() = default;
 
     std::string getFullName() const {
         return m_fullName;
