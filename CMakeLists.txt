@@ -4,5 +4,7 @@ project(labs1to6)
 set(CMAKE_CXX_STANDARD 20)
 
 add_executable(labs1to6 main.cpp
-        lab2.h
+        Course.h
+        Classroom.h
+        Lecturer.h
 )
