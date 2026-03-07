@@ -16,10 +16,22 @@ public:
 
     }
 
-    Lecturer(std::string& name, unsigned int experienceYears, std::string& degree, std::string& faculty):
+    Lecturer(const char* name, unsigned int experienceYears, const char* degree, const char* faculty):
     m_fullName(name), m_experienceYears(experienceYears),
     m_degree(degree), m_faculty(faculty)
     {}
+
+    Lecturer(const Lecturer& other) : m_fullName(other.m_fullName),
+    m_degree(other.m_degree), m_experienceYears(other.m_experienceYears),
+    m_faculty(other.m_faculty){
+    }
+    Lecturer(Lecturer&& other) {
+        this->m_fullName = other.m_fullName;
+        this->m_experienceYears = other.m_experienceYears;
+        this->m_faculty = other.m_faculty;
+        this->m_degree = other.m_degree;
+    }
+
     ~Lecturer() = default;
 
     std::string getFullName() const {

@@ -22,6 +22,15 @@ public:
     Classroom(unsigned int number, unsigned int capacity, ClassroomType type):
     m_number(number), m_capacity(capacity), m_roomType(type){
     }
+    Classroom(const Classroom& other) : m_number(other.m_number),
+    m_capacity(other.m_capacity),
+    m_roomType(other.m_roomType) {
+    }
+    Classroom(Classroom&& other) {
+        this->m_number = other.m_number;
+        this->m_capacity = other.m_capacity;
+        this->m_roomType = other.m_roomType;
+    }
     ~Classroom() = default;
 
     unsigned int getNumber() const {
