@@ -17,14 +17,12 @@ public:
     Course() : Course("Unknown", 0, 0, 0)  {
     }
 
-    Course(const char* name, unsigned int credits, unsigned int lectureCount, unsigned int practiceCount):
+    Course(const std::string name, unsigned int credits, unsigned int lectureCount, unsigned int practiceCount):
     m_name(name), m_credits(credits), m_lectureCount(lectureCount),
     m_practiceCount(practiceCount){
     }
 
-    Course(const Course& other): m_name(other.m_name), m_credits(other.m_credits),
-    m_lectureCount(other.m_lectureCount),
-    m_practiceCount(other.m_practiceCount) {
+    Course(const Course& other): Course(other.m_name, other.m_credits, other.m_lectureCount, other.m_practiceCount) {
 
     }
     Course(Course&& other) {

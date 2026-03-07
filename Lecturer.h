@@ -11,28 +11,26 @@ private:
     unsigned int m_experienceYears;
     std::string m_degree;
     std::string m_faculty;
+
+    static unsigned int m_lecturersCount;
 public:
     Lecturer() : Lecturer("John Doe", 0, "Master", "Unknown") {
 
     }
 
-    Lecturer(const char* name, unsigned int experienceYears, const char* degree, const char* faculty):
+    Lecturer(const std::string& name, unsigned int experienceYears, const std::string& degree, const std::string& faculty):
     m_fullName(name), m_experienceYears(experienceYears),
     m_degree(degree), m_faculty(faculty)
-    {}
+    {m_lecturersCount++;}
 
-    Lecturer(const Lecturer& other) : m_fullName(other.m_fullName),
-    m_degree(other.m_degree), m_experienceYears(other.m_experienceYears),
-    m_faculty(other.m_faculty){
+    Lecturer(const Lecturer& other) : Lecturer(other.m_fullName, other.m_experienceYears, other.m_degree, other.m_faculty){
     }
-    Lecturer(Lecturer&& other) {
-        this->m_fullName = other.m_fullName;
-        this->m_experienceYears = other.m_experienceYears;
-        this->m_faculty = other.m_faculty;
-        this->m_degree = other.m_degree;
+    Lecturer(Lecturer&& other) :Lecturer(other.m_fullName, other.m_experienceYears, other.m_degree, other.m_faculty) {
     }
 
-    ~Lecturer() = default;
+    ~Lecturer() {
+        m_lecturersCount--;
+    }
 
     std::string getFullName() const {
         return m_fullName;
@@ -59,6 +57,12 @@ public:
     void setFaculty(std::string& faculty) {
         m_faculty = faculty;
     }
+
+    static unsigned int getLecturersCount()  {
+        return m_lecturersCount;
+    }
 };
+
+unsigned int Lecturer::m_lecturersCount = 0;
 
 #endif //LABS1TO6_LECTURER_H
