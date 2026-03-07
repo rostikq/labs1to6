@@ -58,11 +58,21 @@ public:
         m_faculty = faculty;
     }
 
-    static unsigned int getLecturersCount()  {
+    static unsigned int getCount()  {
         return m_lecturersCount;
     }
+
+    friend void getLecturerInfo(const Lecturer& lecturer);
 };
 
 unsigned int Lecturer::m_lecturersCount = 0;
+
+void getLecturerInfo(const Lecturer &lecturer) {
+    std::cout << "--Lecturer info--\n"
+    << "Full name: " << lecturer.m_fullName
+    << "\nExperience years: " << lecturer.m_experienceYears
+    << "\nDegree: " << lecturer.m_degree
+    << "\nFaculty: " << lecturer.m_faculty;
+}
 
 #endif //LABS1TO6_LECTURER_H
