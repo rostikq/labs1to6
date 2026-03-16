@@ -4,13 +4,18 @@
 #ifndef LABS1TO6_LECTURER_H
 #define LABS1TO6_LECTURER_H
 #include <string>
+#include <utility>
+#include <vector>
 
-class Lecturer {
+#include "Course.h"
+#include "Person.h"
+
+class Lecturer : public Person {
 private:
-    std::string m_fullName;
     unsigned int m_experienceYears;
     std::string m_degree;
     std::string m_faculty;
+    std::vector<Course*> m_courses;
 
     static unsigned int m_lecturersCount;
 public:
@@ -18,23 +23,19 @@ public:
 
     }
 
-    Lecturer(const std::string& name, unsigned int experienceYears, const std::string& degree, const std::string& faculty):
-    m_fullName(name), m_experienceYears(experienceYears),
-    m_degree(degree), m_faculty(faculty)
+    Lecturer(std::string  name, unsigned int experienceYears, std::string  degree, std::string  faculty): Person(name), m_experienceYears(experienceYears),
+    m_degree(std::move(degree)), m_faculty(std::move(faculty))
     {m_lecturersCount++;}
 
-    Lecturer(const Lecturer& other) : Lecturer(other.m_fullName, other.m_experienceYears, other.m_degree, other.m_faculty){
+    Lecturer(const Lecturer& other) : Lecturer(other.m_fullName ,other.m_experienceYears, other.m_degree, other.m_faculty){
     }
-    Lecturer(Lecturer&& other) :Lecturer(other.m_fullName, other.m_experienceYears, other.m_degree, other.m_faculty) {
+    Lecturer(Lecturer&& other) noexcept :Lecturer(std::move(other.m_fullName), other.m_experienceYears, std::move(other.m_degree), other.m_faculty) {
     }
 
     ~Lecturer() {
         m_lecturersCount--;
     }
 
-    std::string getFullName() const {
-        return m_fullName;
-    }
     unsigned int getExperienceYears() const {
         return m_experienceYears;
     }
@@ -60,6 +61,19 @@ public:
 
     static unsigned int getCount()  {
         return m_lecturersCount;
+    }
+
+    void assignCourse(Course* course) {
+        m_courses.push_back(course);
+    }
+
+    void deassignCourse(Course* course) {
+        for (auto it = m_courses.begin(); it != m_courses.end(); ++it) {
+            if (*it == course) {
+                m_courses.erase(it);
+                return;
+            }
+        }
     }
 
     friend void getLecturerInfo(const Lecturer& lecturer);

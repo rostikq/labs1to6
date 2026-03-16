@@ -25,7 +25,7 @@ public:
     Course(const Course& other): Course(other.m_name, other.m_credits, other.m_lectureCount, other.m_practiceCount) {
 
     }
-    Course(Course&& other) {
+    Course(Course&& other) noexcept {
         this->m_name = other.m_name;
         this->m_credits = other.m_credits;
         this->m_lectureCount = other.m_lectureCount;

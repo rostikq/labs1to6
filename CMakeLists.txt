@@ -7,4 +7,7 @@ add_executable(labs1to6 main.cpp
         Course.h
         Classroom.h
         Lecturer.h
+        LectureClassroom.h
+        PracticeClassroom.h
+        Person.h
 )
