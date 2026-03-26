@@ -16,6 +16,10 @@ public:
 
     virtual ~Person() = default;
 
+    virtual void writeInfo() {
+        std::cout << "--Person--\n" << m_fullName << std::endl;
+    }
+
     void setFullName(const std::string& fullName) {
         m_fullName = fullName;
     }
