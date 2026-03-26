@@ -3,14 +3,16 @@
 //
 #ifndef LABS1TO6_LECTURER_H
 #define LABS1TO6_LECTURER_H
+#include <format>
 #include <string>
 #include <utility>
 #include <vector>
 
 #include "Course.h"
+#include "ISchedulable.h"
 #include "Person.h"
 
-class Lecturer : public Person {
+class Lecturer final : public Person, public ISchedulable {
 private:
     unsigned int m_experienceYears;
     std::string m_degree;
@@ -77,6 +79,24 @@ public:
     }
 
     friend void getLecturerInfo(const Lecturer& lecturer);
+
+    void writeInfo() override {
+        std::cout
+        << "--Lecturer--\n"
+        << m_fullName << "\n"
+        "Experience years: " << m_experienceYears
+        << "\nDegree: " << m_degree
+        << "\nFaculty: " << m_faculty;
+    }
+
+    void assign(int timeSlot) override {
+        std::cout << std::format("Assigning lecturer {} to be occupated at {}", m_fullName, timeSlot);
+    }
+
+    bool isAvailable(int timeSlot) override {
+        std::cout << std::format("Is available {}", timeSlot);
+        return true;
+    }
 };
 
 unsigned int Lecturer::m_lecturersCount = 0;
