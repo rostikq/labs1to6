@@ -6,8 +6,10 @@
 #define LABS1TO6_CLASSROOM_H
 #include <iostream>
 
+#include "ISchedulable.h"
 
-class Classroom {
+
+class Classroom: public ISchedulable{
 protected:
     unsigned int m_number;
     unsigned int m_capacity;
@@ -53,6 +55,15 @@ public:
             this->m_capacity = other.m_capacity;
         }
         return *this;
+    }
+
+    void assign(int timeSlot) override {
+        std::cout << "Assignment of Classroom timeSlot: " << timeSlot << std::endl;
+    }
+
+    bool isAvailable(int timeSlot) override {
+        std::cout << "Check if classroom occupated at " << timeSlot << std::endl;
+        return true;
     }
 
     static unsigned int getCount() {return m_count;}
