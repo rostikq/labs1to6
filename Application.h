@@ -12,6 +12,7 @@
 
 #include "Classroom.h"
 #include "Lecturer.h"
+#include "Logger.h"
 #include "MenuOption.h"
 
 using namespace std;
@@ -23,6 +24,8 @@ class Application {
 private:
     bool m_isAdmin = false;
     bool m_isRunning = false;
+
+    Logger m_logger;
 
     vector<unique_ptr<Lecturer>> m_lecturers;
     vector<unique_ptr<Course>> m_courses;
@@ -132,9 +135,22 @@ private:
                 }
             }
         }
+        if (coursesF.is_open()) {
+            unsigned int amount = 0;
+            coursesF >> amount;
+            if (amount > 0) {
+                for (int i = 0; i < amount; i++) {
+                    auto course = std::make_unique<Course>();
+                    coursesF >> *course;
+                    m_courses.push_back(std::move(course));
+                }
+            }
+        }
     }
 
     void opt_Addlecturer() {
+        m_logger.Log(m_isAdmin, "Add new lecturer");
+
         auto lecturer = std::make_unique<Lecturer>();
 
         cout << "Please enter full name:\n";
@@ -157,6 +173,8 @@ private:
     }
 
     void opt_AddClassroom() {
+        m_logger.Log(m_isAdmin, "Add new classroom");
+
         auto classroom = std::make_unique<Classroom>();
         cout << "Enter number of classroom:\n";
         unsigned int number;
@@ -173,14 +191,35 @@ private:
         m_classrooms.push_back(std::move(classroom));
     }
 
+    void opt_AddCourse() {
+        m_logger.Log(m_isAdmin, "Add new course");
+
+        string name;
+        unsigned int credits;
+        unsigned int practicalHours;
+        unsigned int lectureHours;
+
+        cout << "Enter course name:\n";
+        getline(cin >> ws, name);
+        cout << "Enter credit amount:\n";
+        cin >> credits;
+        cout << "Enter practical hours:\n";
+        cin >> practicalHours;
+        cout << "Enter lecture hours:\n";
+        cin >> lectureHours;
+        auto course = make_unique<Course>(name, credits, lectureHours, practicalHours);
+        m_courses.push_back(std::move(course));
+    }
+
     void opt_editLecturer() {
+
         unsigned int id;
         cout << "Enter id of Lecturer";
         cin >> id;
 
         try {
             auto& lecturer = m_lecturers.at(id);
-
+            m_logger.Log(m_isAdmin, std::format("Edit lecturer {}", id));
             cout << "Please enter full name:\n";
             string name;
             unsigned int years;
@@ -204,6 +243,7 @@ private:
     }
 
     void opt_typeAllLecturers() {
+        m_logger.Log(m_isAdmin, std::format("Print all lecturers"));
         unsigned int it = 0;
         for (auto& lecturer : m_lecturers) {
             std::cout << it;
@@ -212,8 +252,19 @@ private:
         }
     }
 
+    void opt_typeAllCourses() {
+        m_logger.Log(m_isAdmin, std::format("Print all courses"));
+        unsigned int it = 0;
+        for (auto& courses : m_courses) {
+            std::cout << it;
+            courses->writeInfo();
+            it++;
+        }
+    }
+
     void opt_typeAllClassrooms() {
         unsigned int it = 0;
+        m_logger.Log(m_isAdmin, std::format("Print all classrooms"));
         for (auto& classroom : m_classrooms) {
             std::cout << it;
             classroom->writeInfo();
@@ -228,6 +279,7 @@ private:
     void opt_save() {
         std::remove("lecturers.txt");
         std::remove("classrooms.txt");
+        std::remove("courses.txt");
         m_lecturerFile.open("lecturers.txt",  ios::app);
         m_lecturerFile << m_lecturers.size() << '\n';
         if (m_lecturers.size() > 0) {
@@ -244,6 +296,15 @@ private:
             }
         }
         m_classroomsFile.close();
+        m_coursesFile.open("courses.txt", ios::app);
+        m_coursesFile << m_courses.size() << '\n';
+        if (m_courses.size() > 0) {
+            for (auto& course : m_courses) {
+                m_coursesFile << *course << '\n';
+            }
+        }
+        m_logger.Log(m_isAdmin, std::format("Save changes"));
+        m_coursesFile.close();
     }
 
     void opt_appendCourseToLecturer() {
@@ -253,6 +314,7 @@ private:
         try {
             string course;
             auto& lecturer =m_lecturers.at(id);
+            m_logger.Log(m_isAdmin, std::format("Append course to lecturer {}", id));
             cout << "Please course name:\n";
             getline(cin >> std::ws, course);
         }
@@ -261,7 +323,7 @@ private:
         }
     }
 public:
-    Application() {
+    Application() : m_logger("logs.txt") {
         cout << "University schedule app constructed\n";
         loadData();
 
@@ -274,9 +336,11 @@ public:
             m_options.emplace_back("Edit lecturer", &Application::opt_editLecturer);
             m_options.emplace_back("Print all lecturers info", &Application::opt_typeAllLecturers);
             m_options.emplace_back("Print all classrooms info", &Application::opt_typeAllClassrooms);
+            m_options.emplace_back("Print all courses info", &Application::opt_typeAllCourses);
             //Always check for admin options to be farther than general
             m_options.emplace_back("Add Lecturer", &Application::opt_Addlecturer, true);
             m_options.emplace_back("Add Classroom", &Application::opt_AddClassroom, true);
+            m_options.emplace_back("Add Course", &Application::opt_AddCourse, true);
             m_options.emplace_back("Append course to lecturer", &Application::opt_appendCourseToLecturer, true);
             m_options.emplace_back("Save changes", &Application::opt_save, true);
         }
