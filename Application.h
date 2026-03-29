@@ -14,8 +14,12 @@
 using namespace std;
 using namespace std::filesystem;
 
+constexpr auto adminPassword = "adminAdmin123";
+
 class Application {
 private:
+    bool m_isAdmin = false;
+
     vector<unique_ptr<Lecturer>> m_lecturers;
     vector<unique_ptr<Course>> m_courses;
     vector<unique_ptr<Classroom>> m_classrooms;
