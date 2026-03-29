@@ -8,6 +8,10 @@
 
 #include "ISchedulable.h"
 
+enum ClassroomType {
+    LECTURE_CLASSROOM,
+    PRACTICE_CLASSROOM
+};
 
 class Classroom: public ISchedulable{
 protected:
@@ -15,6 +19,7 @@ protected:
     unsigned int m_capacity;
 
     static unsigned int m_count;
+    ClassroomType m_roomType;
 
 public:
     Classroom(): Classroom(0, 30) {}

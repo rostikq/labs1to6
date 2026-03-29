@@ -4,9 +4,15 @@
 
 #ifndef LABS1TO6_MENUOPTION_H
 #define LABS1TO6_MENUOPTION_H
+#include <functional>
+#include <string>
 
+class Application;
 
-class MenuOption {
+struct MenuOption {
+    std::string label;
+    std::function<void(Application* app)> funcPtr;
+    bool adminOnly = false;
 };
 
 
