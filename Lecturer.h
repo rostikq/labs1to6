@@ -5,6 +5,7 @@
 #define LABS1TO6_LECTURER_H
 #include <format>
 #include <string>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -17,7 +18,8 @@ private:
     unsigned int m_experienceYears;
     std::string m_degree;
     std::string m_faculty;
-    std::vector<Course*> m_courses;
+    std::vector<std::string> m_courses;
+    std::unordered_set<int> m_tookTimeSlots;
 
     static unsigned int m_lecturersCount;
 public:
@@ -65,11 +67,13 @@ public:
         return m_lecturersCount;
     }
 
-    void assignCourse(Course* course) {
+    void assignCourse(std::string& course) {
         m_courses.push_back(course);
     }
 
-    void deassignCourse(Course* course) {
+    std::vector<std::string> getCourses() const { return m_courses; }
+
+    void deassignCourse(std::string& course) {
         for (auto it = m_courses.begin(); it != m_courses.end(); ++it) {
             if (*it == course) {
                 m_courses.erase(it);
@@ -109,4 +113,35 @@ void getLecturerInfo(const Lecturer &lecturer) {
     << "\nFaculty: " << lecturer.m_faculty;
 }
 
+
+std::ifstream& operator>>(std::ifstream& ifs, Lecturer& lect) {
+    std::string fullName;
+    unsigned int experienceYears;
+    std::string degree;
+    std::string faculty;
+    size_t timeSlotsCount;
+    ifs >> fullName;
+    ifs >> experienceYears;
+    ifs >> degree;
+    ifs >> faculty;
+    ifs >> timeSlotsCount;
+    if (timeSlotsCount > 0) {
+        std::string course;
+        ifs >> course;
+        lect.assignCourse(course);
+    }
+
+    return ifs;
+}
+
+inline std::ofstream& operator<<(std::ofstream& ofs, const Lecturer& lect) {
+    ofs << lect.getFullName() << lect.getExperienceYears() << lect.getDegree() << lect.getFaculty()
+    << lect.getCourses().size();
+    if (lect.getCourses().size() > 0) {
+        for (auto& course : lect.getCourses()) {
+            ofs << course;
+        }
+    }
+    return ofs;
+}
 #endif //LABS1TO6_LECTURER_H
