@@ -90,7 +90,13 @@ public:
         << m_fullName << "\n"
         "Experience years: " << m_experienceYears
         << "\nDegree: " << m_degree
-        << "\nFaculty: " << m_faculty;
+        << "\nFaculty: " << m_faculty << "\n";
+        if (m_courses.size() > 0) {
+            for (auto& course: m_courses) {
+                std::cout << course << ", ";
+            }
+            std::cout << "\n";
+        }
     }
 
     void assign(int timeSlot) override {
@@ -119,29 +125,37 @@ std::ifstream& operator>>(std::ifstream& ifs, Lecturer& lect) {
     unsigned int experienceYears;
     std::string degree;
     std::string faculty;
-    size_t timeSlotsCount;
-    ifs >> fullName;
+    size_t coursesCount;
+    std::getline(ifs >> std::ws, fullName);
     ifs >> experienceYears;
-    ifs >> degree;
-    ifs >> faculty;
-    ifs >> timeSlotsCount;
-    if (timeSlotsCount > 0) {
+    std::getline(ifs >> std::ws, degree);
+    std::getline(ifs >> std::ws, faculty);
+    ifs >> coursesCount;
+    if (coursesCount > 0) {
         std::string course;
-        ifs >> course;
+        std::getline(ifs >> std::ws, course);
         lect.assignCourse(course);
     }
+
+    lect.setFullName(fullName);
+    lect.setExperienceYears(experienceYears);
+    lect.setDegree(degree);
+    lect.setFaculty(faculty);
 
     return ifs;
 }
 
 inline std::ofstream& operator<<(std::ofstream& ofs, const Lecturer& lect) {
-    ofs << lect.getFullName() << lect.getExperienceYears() << lect.getDegree() << lect.getFaculty()
-    << lect.getCourses().size();
+    ofs << lect.getFullName() << '\n' << lect.getExperienceYears() << '\n' << lect.getDegree() << '\n' << lect.getFaculty()
+    << '\n' << lect.getCourses().size();
     if (lect.getCourses().size() > 0) {
         for (auto& course : lect.getCourses()) {
             ofs << course;
+            ofs << '\n';
         }
     }
     return ofs;
 }
+
+
 #endif //LABS1TO6_LECTURER_H
