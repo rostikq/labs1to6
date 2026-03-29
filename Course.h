@@ -53,5 +53,43 @@ public:
     void setPracticeCount(unsigned int practiceCount) {
         m_practiceCount = practiceCount;
     }
+    void setName(const std::string& name) {
+        m_name = name;
+    }
+
+    std::string getName() {
+        return m_name;
+    }
+
+    void writeInfo() {
+        std::cout << "--Course--";
+        std::cout << "Name: " << m_name << '\n';
+        std::cout << "Credits: " << m_credits << '\n';
+        std::cout << "Lectures: " << m_lectureCount << '\n';
+        std::cout << "Practice: " << m_practiceCount << '\n';
+    }
 };
+
+inline std::ifstream& operator>>(std::ifstream& is, Course& course) {
+    std::string name;
+    unsigned int credits;
+    unsigned int lectureCount;
+    unsigned int practiceCount;
+    std::getline(is, name);
+    course.setName(name);
+    is >> credits;
+    is >> lectureCount;
+    is >> practiceCount;
+    course.setCredits(credits);
+    course.setLectureCount(lectureCount);
+    course.setPracticeCount(practiceCount);
+    return is;
+}
+
+inline std::ofstream& operator<<(std::ofstream& os, Course& course) {
+    os << course.getName() << '\n' << course.getCredits() << '\n';
+    os << course.getLectureCount() << '\n';
+    os << course.getPracticeCount() << '\n';
+    return os;
+}
 #endif //LABS1TO6_COURSE_H
