@@ -15,20 +15,23 @@ private:
     ofstream m_file;
 
 public:
-    Logger(string logFileName) : m_file(logFileName) {
-
+    Logger(string logFileName) : m_file(logFileName, ios::app) {
     }
     ~Logger() {
         m_file.close();
     }
 
     void Log(bool isAdmin ,const string& message) {
-        if (isAdmin)
-            m_file << "Administrator: ";
-        else {
-            m_file << "User: ";
+        if (m_file.is_open()) {
+            cout << "Log";
+            if (isAdmin)
+                m_file << "Administrator: ";
+            else {
+                m_file << "User: ";
+            }
+            m_file << message << '\n';
+            m_file.flush();
         }
-        m_file << message << '\n';
     }
 };
 
