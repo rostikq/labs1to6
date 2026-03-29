@@ -121,6 +121,17 @@ private:
                 }
             }
         }
+        if (classroomsF.is_open()) {
+            unsigned int amount = 0;
+            classroomsF >> amount;
+            if (amount > 0) {
+                for (int i = 0; i < amount; i++) {
+                    auto classroom = std::make_unique<Classroom>();
+                    classroomsF >> *classroom;
+                    m_classrooms.push_back(std::move(classroom));
+                }
+            }
+        }
     }
 
     void opt_Addlecturer() {
@@ -143,6 +154,23 @@ private:
         getline(cin >> std::ws,faculty);
         lecturer->setFaculty(faculty);
         m_lecturers.push_back(std::move(lecturer));
+    }
+
+    void opt_AddClassroom() {
+        auto classroom = std::make_unique<Classroom>();
+        cout << "Enter number of classroom:\n";
+        unsigned int number;
+        char classRoomType;
+        cin >> number;
+        classroom->setNumber(number);
+        cout << "Enter capacity of classroom:\n";
+        cin >> number;
+        classroom->setCapacity(number);
+        cout << "Enter classroom type (1 - lecture, 2 - practice):\n";
+        cin >> classRoomType;
+        if (classRoomType == '2')
+        classroom->setClassroomType(ClassroomType::PRACTICE_CLASSROOM);
+        m_classrooms.push_back(std::move(classroom));
     }
 
     void opt_editLecturer() {
@@ -184,12 +212,22 @@ private:
         }
     }
 
+    void opt_typeAllClassrooms() {
+        unsigned int it = 0;
+        for (auto& classroom : m_classrooms) {
+            std::cout << it;
+            classroom->writeInfo();
+            it++;
+        }
+    }
+
     void opt_exit() {
         m_isRunning = false;
     }
 
     void opt_save() {
         std::remove("lecturers.txt");
+        std::remove("classrooms.txt");
         m_lecturerFile.open("lecturers.txt",  ios::app);
         m_lecturerFile << m_lecturers.size() << '\n';
         if (m_lecturers.size() > 0) {
@@ -198,6 +236,14 @@ private:
             }
         }
         m_lecturerFile.close();
+        m_classroomsFile.open("classrooms.txt", ios::app);
+        m_classroomsFile << m_classrooms.size() << '\n';
+        if (m_classrooms.size() > 0) {
+            for (auto& classroom : m_classrooms) {
+                m_classroomsFile << *classroom << '\n';
+            }
+        }
+        m_classroomsFile.close();
     }
 
     void opt_appendCourseToLecturer() {
@@ -227,8 +273,10 @@ public:
             m_options.emplace_back("Exit", &Application::opt_exit);
             m_options.emplace_back("Edit lecturer", &Application::opt_editLecturer);
             m_options.emplace_back("Print all lecturers info", &Application::opt_typeAllLecturers);
+            m_options.emplace_back("Print all classrooms info", &Application::opt_typeAllClassrooms);
             //Always check for admin options to be farther than general
             m_options.emplace_back("Add Lecturer", &Application::opt_Addlecturer, true);
+            m_options.emplace_back("Add Classroom", &Application::opt_AddClassroom, true);
             m_options.emplace_back("Append course to lecturer", &Application::opt_appendCourseToLecturer, true);
             m_options.emplace_back("Save changes", &Application::opt_save, true);
         }
